@@ -1,0 +1,37 @@
+services:
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: iotdb
+    networks:
+      - iot-net
+
+  mqtt:
+    image: eclipse-mosquitto:2
+    ports:
+      - "1883:1883"
+    networks:
+      - iot-net
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - iot-net
+
+  app:
+    image: iot-app:latest
+    depends_on:
+      - db
+      - mqtt
+    networks:
+      - iot-net
+
+networks:
+  iot-net:
+    driver: overlay
