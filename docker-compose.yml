@@ -21,6 +21,9 @@ services:
       - "80:80"
     volumes:
       - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./frontend:/usr/share/nginx/html:ro
+    depends_on:
+      - app
     networks:
       - iot-net
 
@@ -32,6 +35,12 @@ services:
     networks:
       - iot-net
 
+  adminer:
+    image: adminer:latest
+    ports:
+      - "8081:8080"
+    networks:
+      - iot-net
 networks:
   iot-net:
-    driver: overlay
+    driver: bridge
